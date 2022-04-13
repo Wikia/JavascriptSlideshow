@@ -16,7 +16,7 @@
 		"MediaWiki": ">= 1.29.0"
 	},
 	"ExtensionFunctions": [
-		"JavascriptSlideshowHooks::extensionHook"
+		"JavascriptSlideshowHooks::loadModules"
 	],
 	"MessagesDirs": {
 		"JavascriptSlideshow": [
@@ -27,7 +27,7 @@
 		"JavascriptSlideshowMagic": "JavascriptSlideshow.i18n.magic.php"
 	},
 	"AutoloadClasses": {
-		"JavascriptSlideshowHooks": "JavascriptSlideshow.hooks.php"
+		"JavascriptSlideshowHooks": "JavascriptSlideshowHooks.php"
 	},
 	"ResourceModules": {
 		"ext.slideshow.main": {
@@ -52,7 +52,7 @@
 	},
 	"Hooks": {
 		"ParserFirstCallInit": [
-			"JavascriptSlideshowHooks::wfSlideshowExtension"
+			"JavascriptSlideshowHooks::onParserFirstCallInit"
 		]
 	},
 	"manifest_version": 1
