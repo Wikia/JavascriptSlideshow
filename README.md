@@ -1,8 +1,6 @@
-Javascript-Slideshow
-====================
+# Javascript-Slideshow
 
-Mediawiki Javascript Slideshow
+Renders slideshow with some javascript code.
 
-Installation:
-Add this to LocalSettings.php
-require_once('$IP/extensions/JavascriptSlideshow/JavascriptSlideshow.php');
+## Usage
+https://www.mediawiki.org/wiki/Extension:JavascriptSlideshow
