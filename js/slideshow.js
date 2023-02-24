@@ -14,7 +14,7 @@ function getChildMaxImgWidth(parent) {
 	var i;
 	for (i = 0; i < parent.childNodes.length; i++) {
 		child = parent.childNodes[i];
-		if (child.tagName == 'IMG') {
+		if (child.tagName === 'IMG') {
 			curWidth = child.getAttribute("width");
 			if (curWidth > maxWidth) {
 				maxWidth = curWidth;
@@ -38,7 +38,7 @@ function getChildDivs(id) {
 	var maxImgWidth = 0;
 	for (i = 0; i < parent.childNodes.length; i++) {
 		var child = parent.childNodes[i];
-		if (child.tagName == 'DIV') {
+		if (child.tagName === 'DIV') {
 			childDivs[childDivCount++] = child;
 			child.style.display = 'block';
 			if (maxHeight < child.offsetHeight) {
@@ -47,7 +47,6 @@ function getChildDivs(id) {
 			if (maxWidth < child.offsetWidth) {
 				maxWidth = child.offsetWidth
 			}
-			child.style.position = 'absolute';
 			/* IE6 & IE8 need the div width to be set */
 			maxImgWidth = getChildMaxImgWidth(child);
 			if (maxImgWidth > 0) {
@@ -68,11 +67,11 @@ function getChildDivs(id) {
 function getInitialDivIndex(id, sequence) {
 	var sequence = document.getElementById(id).getAttribute("data-sequence");
 	var index = -1;
-	if (sequence == 'forward') {
+	if (sequence === 'forward') {
 		index = 0;
-	} else if (sequence == 'backward') {
+	} else if (sequence === 'backward') {
 		index = (slideshowDivs[id].length) - 1;
-	} else if (sequence == 'random') {
+	} else if (sequence === 'random') {
 		index = Math.floor(Math.random() * slideshowDivs[id].length);
 	}
 	jQuery(slideshowDivs[id][index]).show();
@@ -82,20 +81,20 @@ function getInitialDivIndex(id, sequence) {
 function getNextDivIndex(id) {
 	var sequence = document.getElementById(id).getAttribute("data-sequence");
 	var index = -1;
-	if (sequence == 'forward') {
+	if (sequence === 'forward') {
 		index = currentDivIndexes[id] + 1;
-		if (index == slideshowDivs[id].length) {
+		if (index === slideshowDivs[id].length) {
 			index = 0;
 		}
-	} else if (sequence == 'backward') {
+	} else if (sequence === 'backward') {
 		index = currentDivIndexes[id] - 1;
-		if (index == -1) {
+		if (index === -1) {
 			index = slideshowDivs[id].length - 1;
 		}
-	} else if (sequence == 'random') {
+	} else if (sequence === 'random') {
 		index = currentDivIndexes[id];
 		if (slideshowDivs[id].length > 1) {
-			while (index == currentDivIndexes[id]) {
+			while (index === currentDivIndexes[id]) {
 				index = Math.floor(Math.random() * slideshowDivs[id].length);
 			}
 		}
@@ -113,13 +112,13 @@ function doTransition(parentId, currentNode, newNode) {
 	var transition = parent.getAttribute("data-transition");
 	var duration = parent.getAttribute("data-transitiontime");
 
-	if (transition == 'cut') {
+	if (transition === 'cut') {
 		currentNode.hide();
 		newNode.show();
-	} else if (transition == 'fade') {
+	} else if (transition === 'fade') {
 		currentNode.fadeOut(Number(duration));
 		newNode.fadeIn(Number(duration));
-	} else if (transition == 'blindDown') {
+	} else if (transition === 'blindDown') {
 		currentNode.fadeOut(Number(duration));
 		newNode.slideDown(Number(duration));
 	}
