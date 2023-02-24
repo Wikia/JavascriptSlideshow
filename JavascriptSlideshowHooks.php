@@ -1,4 +1,7 @@
 <?php
+
+use MediaWiki\Hook\ParserFirstCallInitHook;
+
 /**
  * Javascript Slideshow
  * Javascript Slideshow Hooks
@@ -8,20 +11,20 @@
  * @link    https://gitlab.com/hydrawiki/extensions/javascriptslideshow
  */
 
-class JavascriptSlideshowHooks {
+class JavascriptSlideshowHooks implements ParserFirstCallInitHook {
 	/**
 	 * Sets up this extensions parser functions.
 	 *
-	 * @param Parser &$parser
+	 * @param Parser $parser
 	 * @return bool true
 	 * @throws MWException
 	 */
-	public static function onParserFirstCallInit( Parser &$parser ): bool {
+	public function onParserFirstCallInit( $parser ): bool {
 		$output = RequestContext::getMain()->getOutput();
 		$output->addModules( 'ext.slideshow.main' );
 
-		$parser->setHook( 'slideshow', [ __CLASS__, 'renderSlideshowTag' ] );
-		$parser->setFunctionHook( 'slideshow', [ __CLASS__, 'renderSlideshowParserFunction' ] );
+		$parser->setHook( 'slideshow', [ JavascriptSlideshowHooks::class, 'renderSlideshowTag' ] );
+		$parser->setFunctionHook( 'slideshow', [ JavascriptSlideshowHooks::class, 'renderSlideshowParserFunction' ] );
 
 		return true;
 	}
