@@ -32,8 +32,8 @@
 	"ResourceModules": {
 		"ext.slideshow.main": {
 			"dependencies":[
-                "mediawiki.jqueryMsg"
-        	],
+				"mediawiki.jqueryMsg"
+			],
 			"scripts": [
 				"js/slideshow.js"
 			],
@@ -50,10 +50,13 @@
 		"localBasePath": "/",
 		"remoteExtPath": "JavascriptSlideshow"
 	},
+	"HookHandlers": {
+		"main": {
+			"class": "JavascriptSlideshowHooks"
+		}
+	},
 	"Hooks": {
-		"ParserFirstCallInit": [
-			"JavascriptSlideshowHooks::onParserFirstCallInit"
-		]
+		"ParserFirstCallInit": "main"
 	},
 	"manifest_version": 1
 }
