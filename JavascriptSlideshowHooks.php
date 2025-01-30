@@ -1,6 +1,9 @@
 <?php
 
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Hook\ParserFirstCallInitHook;
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Parser\Parser;
 
 /**
  * Javascript Slideshow
@@ -17,14 +20,13 @@ class JavascriptSlideshowHooks implements ParserFirstCallInitHook {
 	 *
 	 * @param Parser $parser
 	 * @return bool true
-	 * @throws MWException
 	 */
 	public function onParserFirstCallInit( $parser ): bool {
 		$output = RequestContext::getMain()->getOutput();
 		$output->addModules( 'ext.slideshow.main' );
 
-		$parser->setHook( 'slideshow', [ JavascriptSlideshowHooks::class, 'renderSlideshowTag' ] );
-		$parser->setFunctionHook( 'slideshow', [ JavascriptSlideshowHooks::class, 'renderSlideshowParserFunction' ] );
+		$parser->setHook( 'slideshow', [ self::class, 'renderSlideshowTag' ] );
+		$parser->setFunctionHook( 'slideshow', [ self::class, 'renderSlideshowParserFunction' ] );
 
 		return true;
 	}
@@ -32,10 +34,10 @@ class JavascriptSlideshowHooks implements ParserFirstCallInitHook {
 	/**
 	 * Explodes a string that contains a space delimited array of associative key value pairs.
 	 *
-	 * @param string String to explode arguments from.
+	 * @param string $string String to explode arguments from.
 	 * @return array Constructed array of associative key value pairs.
 	 */
-	private static function explodeArguments( $string ) {
+	private static function explodeArguments( string $string ): array {
 		$pairDelimiter = ' ';
 		$kvDelimiter = '=';
 
@@ -49,27 +51,31 @@ class JavascriptSlideshowHooks implements ParserFirstCallInitHook {
 				}
 			}
 		}
-		return $arguments;
+		return $arguments ?? [];
 	}
 
 	/**
 	 * Initiates some needed classes.
 	 *
-	 * @param  object	Parser object passed as a reference.
-	 * @param  string	First argument passed to function tag, HTML input of <div> tags.
-	 * @param  string	Second argument passed to function tag, delimited list of options.
+	 * @param object &$parser Parser object passed as a reference.
+	 * @param string $input First argument passed to function tag, HTML input of <div> tags.
+	 * @param string $options Second argument passed to function tag, delimited list of options.
 	 * @return string HTML output of self::renderSlideshow()
 	 */
-	public static function renderSlideshowParserFunction( &$parser, $input = '', $options = '' ) {
+	public static function renderSlideshowParserFunction( object &$parser, string $input = '', string $options = '' ): string {
 		return self::renderSlideshow( $input, self::explodeArguments( $options ) );
 	}
 
 	/**
 	 * The callback function for converting the input text to HTML output.
 	 *
-	 * @return void
+	 * @param $input
+	 * @param $argv
+	 * @param $parser
+	 * @param $frame
+	 * @return string
 	 */
-	public static function renderSlideshowTag( $input, $argv, $parser, $frame ) {
+	public static function renderSlideshowTag( $input, $argv, $parser, $frame ): string {
 		$wikitext = self::renderSlideshow( $input, $argv );
 		return $parser->recursiveTagParse( $wikitext, $frame );
 	}
@@ -77,11 +83,11 @@ class JavascriptSlideshowHooks implements ParserFirstCallInitHook {
 	/**
 	 * Renders the slideshow information into output for the calling tag or function.
 	 *
-	 * @param  string	Combined raw HTML and wiki text.
-	 * @param  array	Options that have been parsed by self::explodeArguments()
+	 * @param string $wikitext Combined raw HTML and wiki text.
+	 * @param array $options Options that have been parsed by self::explodeArguments()
 	 * @return string Rendered output
 	 */
-	private static function renderSlideshow( $wikitext, $options = [] ) {
+	private static function renderSlideshow( string $wikitext, array $options = [] ): string {
 		$validSequences = [ 'forward', 'backward', 'random' ];
 		$validTransitions = [ 'cut', 'fade', 'blindDown' ];
 
@@ -132,8 +138,9 @@ class JavascriptSlideshowHooks implements ParserFirstCallInitHook {
 	 * Add a CSS module with addModuleStyles to ensure it's loaded
 	 * even if there is no Javascript support
 	 */
-	public static function loadModules() {
-		global $wgOut;
+	public static function loadModules(): bool {
+		$config = MediaWikiServices::getInstance()->getMainConfig();
+		$wgOut = $config->get( 'Out' );
 		$wgOut->addModuleStyles( 'ext.slideshow.css' );
 		return true;
 	}

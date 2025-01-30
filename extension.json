@@ -31,7 +31,7 @@
 	},
 	"ResourceModules": {
 		"ext.slideshow.main": {
-			"dependencies":[
+			"dependencies": [
 				"mediawiki.jqueryMsg"
 			],
 			"scripts": [
